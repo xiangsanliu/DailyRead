@@ -56,15 +56,15 @@
 
     <include layout="@layout/content_read" />
 
-    <!--<android.support.design.widget.FloatingActionButton-->
-        <!--android:id="@+id/fab"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_margin="8dp"-->
-        <!--app:layout_anchor="@id/app_bar"-->
-        <!--app:backgroundTint="@android:color/holo_purple"-->
-        <!--app:layout_anchorGravity="bottom|end"-->
-        <!--android:src="@drawable/ic_share_white_48dp"-->
-        <!--/>-->
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        app:layout_anchor="@id/app_bar"
+        app:backgroundTint="@android:color/holo_purple"
+        app:layout_anchorGravity="bottom|end"
+        android:src="@drawable/ic_share_white_48dp"
+        />
 
 </android.support.design.widget.CoordinatorLayout>

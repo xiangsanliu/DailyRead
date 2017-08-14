@@ -1,7 +1,9 @@
 package com.xiang.study.dailyread;
 
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 
 import com.alibaba.fastjson.JSON;
@@ -26,7 +28,8 @@ import io.reactivex.schedulers.Schedulers;
  *
  */
 
-public class Test {
+public class Test   {
     private void test() {
+
     }
 }
