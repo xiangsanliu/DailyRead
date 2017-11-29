@@ -46,6 +46,7 @@ class MainPresenter(private val context: Context, private val view: MainView) : 
             }
 
             override fun onFailure(statusCode: Int, headers: Array<out Header>?, responseBody: ByteArray?, error: Throwable?) {
+
             }
 
         })
