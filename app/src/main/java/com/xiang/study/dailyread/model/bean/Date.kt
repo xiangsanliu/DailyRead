@@ -8,10 +8,11 @@ import java.util.*
  *
  */
 
-class Date {
+class Date() {
     var date: String? = null
     var stories: List<Story>? = null
     var top_stories: List<TopStory>? = null
+
     override fun toString(): String {
         for (story : Story in stories!!) {
             Log.d("title", story.title)

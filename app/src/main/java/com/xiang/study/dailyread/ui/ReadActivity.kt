@@ -1,6 +1,7 @@
 package com.xiang.study.dailyread.ui
 
 import android.content.Intent
+import android.databinding.DataBindingUtil
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Color
@@ -26,6 +27,7 @@ import com.loopj.android.http.AsyncHttpResponseHandler
 import com.xiang.study.dailyread.CollapsingToolbarLayoutState
 
 import com.xiang.study.dailyread.R
+import com.xiang.study.dailyread.databinding.ActivityReadBinding
 import com.xiang.study.dailyread.model.bean.Article
 import com.xiang.study.dailyread.presenter.ReadPresenter
 import com.xiang.study.dailyread.view.ReadView
@@ -34,6 +36,8 @@ import us.feras.mdv.MarkdownView
 
 class ReadActivity : AppCompatActivity(), ReadView {
 
+
+    lateinit var binding : ActivityReadBinding
 
     lateinit var markdownView : MarkdownView
     lateinit var toolbar : Toolbar
@@ -48,7 +52,7 @@ class ReadActivity : AppCompatActivity(), ReadView {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_read)
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_read)
         initViews()
         presenter = ReadPresenter(this, this)
         presenter.onCreate()
@@ -58,11 +62,11 @@ class ReadActivity : AppCompatActivity(), ReadView {
     override fun initViews() {
         initStatusBar()
         initToolbar()
-        appBarLayout = findViewById(R.id.app_bar) as AppBarLayout
-        scrollView = findViewById(R.id.scroll_view) as NestedScrollView
-        markdownView = findViewById(R.id.article_content) as MarkdownView
-        imageView = findViewById(R.id.background) as ImageView
-        fab = findViewById(R.id.fab) as FloatingActionButton
+        appBarLayout = binding.appBar
+        scrollView = binding.scrollView
+        markdownView = binding.articleContent
+        imageView = binding.background
+        fab = binding.fab
 
     }
 

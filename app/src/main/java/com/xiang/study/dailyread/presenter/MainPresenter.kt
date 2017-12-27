@@ -40,8 +40,9 @@ class MainPresenter(private val context: Context, private val view: MainView) : 
         val client = AsyncHttpClient()
         client.get("https://news-at.zhihu.com/api/4/news/latest", object : AsyncHttpResponseHandler() {
             override fun onSuccess(statusCode: Int, headers: Array<out Header>?, responseBody: ByteArray?) {
-                val date = JSON.parseObject(String(responseBody!!), Date::class.java)
-                storyAdapter = StoryAdapter(date.stories)
+                val response = String(responseBody!!)
+                val date = JSON.parseObject(response, Date::class.java)
+                storyAdapter = StoryAdapter(date.stories!!)
                 view.loadStoryList(storyAdapter)
             }
 
