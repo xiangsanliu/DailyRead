@@ -2,10 +2,8 @@ package com.xiang.study.dailyread.model.adapter
 
 import android.content.Intent
 import android.support.v7.widget.CardView
-import android.util.Log
 import android.view.View
 import android.widget.ImageView
-import android.widget.TextView
 
 import com.bumptech.glide.Glide
 import com.chad.library.adapter.base.BaseQuickAdapter

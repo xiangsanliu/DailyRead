@@ -3,6 +3,7 @@ package com.xiang.study.dailyread.presenter
 import android.content.Context
 import android.content.Intent
 import android.util.Log
+import android.widget.Toast
 import com.alibaba.fastjson.JSON
 import com.loopj.android.http.AsyncHttpClient
 import com.loopj.android.http.AsyncHttpResponseHandler
@@ -35,8 +36,7 @@ class MainPresenter(private val context: Context, private val view: MainView) : 
         loadStoryList()
     }
 
-    fun  loadStoryList() {
-
+    private fun  loadStoryList() {
         val client = AsyncHttpClient()
         client.get("https://news-at.zhihu.com/api/4/news/latest", object : AsyncHttpResponseHandler() {
             override fun onSuccess(statusCode: Int, headers: Array<out Header>?, responseBody: ByteArray?) {
@@ -45,9 +45,8 @@ class MainPresenter(private val context: Context, private val view: MainView) : 
                 storyAdapter = StoryAdapter(date.stories!!)
                 view.loadStoryList(storyAdapter)
             }
-
             override fun onFailure(statusCode: Int, headers: Array<out Header>?, responseBody: ByteArray?, error: Throwable?) {
-
+                Toast.makeText(context, error!!.message, Toast.LENGTH_SHORT).show()
             }
 
         })

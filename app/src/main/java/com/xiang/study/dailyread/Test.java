@@ -8,12 +8,15 @@ import android.view.View;
 
 import com.alibaba.fastjson.JSON;
 import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.xiang.study.dailyread.model.adapter.StoryAdapter;
 import com.xiang.study.dailyread.model.bean.Article;
 import com.xiang.study.dailyread.model.bean.Date;
 import com.xiang.study.dailyread.model.network.HttpGetter;
 import com.xiang.study.dailyread.presenter.MainPresenter;
 
+import cz.msebera.android.httpclient.Header;
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
@@ -30,6 +33,5 @@ import io.reactivex.schedulers.Schedulers;
 
 public class Test   {
     private void test() {
-
     }
 }
