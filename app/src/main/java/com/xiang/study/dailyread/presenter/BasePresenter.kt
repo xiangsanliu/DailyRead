@@ -11,8 +11,15 @@ import com.xiang.study.dailyread.view.BaseView
  *
  */
 
-abstract class BasePresenter {
+abstract class BasePresenter<T : BaseView> {
 
-    abstract fun onCreate()
+    protected lateinit var view: T
 
+    public fun attachView(view: T) {
+        this.view = view;
+    }
+
+    protected fun showToast(context: Context, toast: String) {
+        Toast.makeText(context, toast, Toast.LENGTH_SHORT).show()
+    }
 }

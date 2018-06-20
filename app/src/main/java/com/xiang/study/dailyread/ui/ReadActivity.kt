@@ -1,69 +1,33 @@
 package com.xiang.study.dailyread.ui
 
 import android.content.Intent
-import android.databinding.DataBindingUtil
 import android.graphics.Color
-import android.os.Bundle
 import android.support.design.widget.AppBarLayout
-import android.support.design.widget.CollapsingToolbarLayout
-import android.support.design.widget.FloatingActionButton
-import android.support.v4.widget.NestedScrollView
-import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.Toolbar
-import android.view.*
-import android.widget.ImageView
-import android.widget.TextView
+import android.view.Menu
+import android.view.View
+import android.view.WindowManager
 import com.bumptech.glide.Glide
-import com.xiang.study.dailyread.share.CollapsingToolbarLayoutState
-
 import com.xiang.study.dailyread.R
 import com.xiang.study.dailyread.databinding.ActivityReadBinding
 import com.xiang.study.dailyread.model.bean.Article
 import com.xiang.study.dailyread.presenter.ReadPresenter
+import com.xiang.study.dailyread.share.CollapsingToolbarLayoutState
 import com.xiang.study.dailyread.view.ReadView
-import us.feras.mdv.MarkdownView
 
-class ReadActivity : AppCompatActivity(), ReadView {
+class ReadActivity : BaseActivity<ActivityReadBinding>(), ReadView {
 
 
-    private lateinit var binding : ActivityReadBinding
+    private lateinit var presenter: ReadPresenter
 
-    private lateinit var markdownView : MarkdownView
-    private lateinit var toolbar : Toolbar
-    private lateinit var fab : FloatingActionButton
-    private lateinit var presenter : ReadPresenter
-    private lateinit var imageView: ImageView
-    private lateinit var collapsinToolbar: CollapsingToolbarLayout
-    private lateinit var appBarLayout: AppBarLayout
-    private lateinit var articleTitle: TextView
-    private lateinit var scrollView : NestedScrollView
-    private var state : CollapsingToolbarLayoutState = CollapsingToolbarLayoutState.EXPANDED
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_read)
-        initViews()
-        presenter = ReadPresenter(this, this)
-        presenter.onCreate()
-        presenter.loadAriticle(intent.getStringExtra("article_id"))
-    }
-
-    override fun initViews() {
-        initStatusBar()
-        initToolbar()
-        appBarLayout = binding.appBar
-        scrollView = binding.scrollView
-        markdownView = binding.articleContent
-        imageView = binding.background
-        fab = binding.fab
-
-    }
+    private var state: CollapsingToolbarLayoutState = CollapsingToolbarLayoutState.EXPANDED
 
     override fun loadArtile(article: Article) {
+        val collapsinToolbar = binding.toolbarLayout
+        val articleTitle = binding.articleTitle
         loadContent(article.body!!)
-        Glide.with(this).load(article.image).into(imageView)
+        Glide.with(this).load(article.image).into(binding.background)
         articleTitle.text = article.title
-        appBarLayout.addOnOffsetChangedListener { appBarLayout, verticalOffset ->
+        binding.appBar.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { appBarLayout, verticalOffset ->
             if (verticalOffset == 0) {
                 if (state != CollapsingToolbarLayoutState.EXPANDED) {
                     //修改状态标记为展开
@@ -91,30 +55,52 @@ class ReadActivity : AppCompatActivity(), ReadView {
                     invalidateOptionsMenu()
                 }
             }
-        }
-        val shareIntent  = Intent().setAction(Intent.ACTION_SEND).setType("text/plain")
-        val shareText : String = article.title+ "\n" + article.share_url
+        })
+        val shareIntent = Intent().setAction(Intent.ACTION_SEND).setType("text/plain")
+        val shareText: String = article.title + "\n" + article.share_url
         shareIntent.putExtra(Intent.EXTRA_TEXT, shareText)
-        fab.setOnClickListener {
-            startActivity(Intent.createChooser(shareIntent, article.title))
-        }
-        toolbar.setOnMenuItemClickListener { item ->
-            val id = item.itemId
-            when(id) {
-                R.id.action_share -> startActivity(Intent.createChooser(shareIntent, article.title))
+        binding.toolbar.setOnMenuItemClickListener { item ->
+            when (item.itemId) {
+                R.id.action_share -> share(article)
             }
-            return@setOnMenuItemClickListener  true
+            return@setOnMenuItemClickListener true
         }
 
     }
 
-    private fun loadContent(content: String) {
-        markdownView.loadMarkdown(content, "file:///android_asset/style.css")
+    override fun initPresenter() {
+        presenter = ReadPresenter(this)
+        presenter.attachView(this)
+    }
+
+    override fun initData() {
+        presenter.loadArticle(intent.getStringExtra("article_id"))
+    }
+
+    override fun initViews() {
+        initStatusBar()
+        initToolbar()
+
+    }
+
+    override fun getLayoutId(): Int {
+        return R.layout.activity_read
     }
 
     override fun onBackPressed() {
         super.onBackPressed()
         finish()
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_read, menu)
+        return super.onCreateOptionsMenu(menu)
+
+    }
+
+    override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
+        menu!!.findItem(R.id.action_share).isVisible = state == CollapsingToolbarLayoutState.COLLAPSED
+        return super.onPrepareOptionsMenu(menu)
     }
 
     private fun initStatusBar() {
@@ -129,27 +115,25 @@ class ReadActivity : AppCompatActivity(), ReadView {
     }
 
     private fun initToolbar() {
-        toolbar = findViewById(R.id.toolbar)
-        collapsinToolbar = findViewById(R.id.toolbar_layout)
+        val toolbar = binding.toolbar
         setSupportActionBar(toolbar)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-        articleTitle = findViewById(R.id.article_title)
-        collapsinToolbar.title = " "
+        binding.toolbarLayout.title = " "
         toolbar.setNavigationOnClickListener { finish() }
         toolbar.setOnClickListener {
-            scrollView.smoothScrollTo(0, 0)
+            binding.scrollView.smoothScrollTo(0, 0)
         }
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.menu_read, menu)
-        return super.onCreateOptionsMenu(menu)
-
+    private fun loadContent(content: String) {
+        binding.articleContent.loadMarkdown(content, "file:///android_asset/style.css")
     }
 
-    override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
-        menu!!.findItem(R.id.action_share).isVisible = state == CollapsingToolbarLayoutState.COLLAPSED
-        return super.onPrepareOptionsMenu(menu)
+    private fun share(article: Article) {
+        val shareIntent = Intent().setAction(Intent.ACTION_SEND).setType("text/plain")
+        val shareText = article.title + '\n' + article.share_url;
+        shareIntent.putExtra(Intent.EXTRA_TEXT, shareText)
+        startActivity(Intent.createChooser(shareIntent, article.title))
     }
 
 }

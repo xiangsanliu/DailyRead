@@ -5,5 +5,4 @@ package com.xiang.study.dailyread.view
  *
  */
 interface BaseView {
-    fun initViews()
 }

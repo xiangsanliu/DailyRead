@@ -23,17 +23,15 @@ import io.reactivex.schedulers.Schedulers
 
  */
 
-class ReadPresenter(private val context: Context, private val view: ReadView): BasePresenter() {
+class ReadPresenter(private val context: Context) : BasePresenter<ReadView>() {
 
-    override fun onCreate() {
-
-    }
-
-    fun loadAriticle(id: String) {
-        val client: AsyncHttpClient = AsyncHttpClient()
-        client.get("https://news-at.zhihu.com/api/4/news/"+id, object : AsyncHttpResponseHandler(){
+    fun loadArticle(id: String) {
+        val client = AsyncHttpClient()
+        client.get("https://news-at.zhihu.com/api/4/news/" + id, object : AsyncHttpResponseHandler() {
             override fun onFailure(statusCode: Int, headers: Array<out Header>?, responseBody: ByteArray?, error: Throwable?) {
+                showToast(context, error?.message!!);
             }
+
             override fun onSuccess(statusCode: Int, headers: Array<out Header>?, responseBody: ByteArray?) {
                 val article: Article = JSON.parseObject(String(responseBody!!), Article::class.java)
                 view.loadArtile(article)
