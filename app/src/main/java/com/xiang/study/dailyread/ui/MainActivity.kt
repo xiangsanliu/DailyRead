@@ -1,12 +1,10 @@
 package com.xiang.study.dailyread.ui
 
-import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
 import com.xiang.study.dailyread.R
 import com.xiang.study.dailyread.databinding.ActivityMainBinding
-import com.xiang.study.dailyread.presenter.MainPresenter
 import com.xiang.study.dailyread.model.adapter.StoryAdapter
+import com.xiang.study.dailyread.presenter.MainPresenter
 import com.xiang.study.dailyread.view.MainView
 
 

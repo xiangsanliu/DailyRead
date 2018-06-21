@@ -3,9 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.xiang.study.dailyread.ui.ReadActivity">
     <item
-        android:icon="@drawable/ic_share_white_24dp"
         android:id="@+id/action_share"
+        android:icon="@drawable/ic_share_white_24dp"
         android:orderInCategory="100"
-        android:title="Share"
+        android:title="@string/share"
         app:showAsAction="always" />
 </menu>

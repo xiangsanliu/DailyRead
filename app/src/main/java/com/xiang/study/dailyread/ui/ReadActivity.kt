@@ -16,15 +16,27 @@ import com.xiang.study.dailyread.view.ReadView
 
 class ReadActivity : BaseActivity<ActivityReadBinding>(), ReadView {
 
+    private val cssUrl = "file:///android_asset/style.css"
 
     private lateinit var presenter: ReadPresenter
 
+    // 可折叠状态栏的状态
     private var state: CollapsingToolbarLayoutState = CollapsingToolbarLayoutState.EXPANDED
 
-    override fun loadArtile(article: Article) {
-        val collapsinToolbar = binding.toolbarLayout
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_read, menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        finish()
+    }
+
+    override fun loadArticle(article: Article) {
+        val collapsingToolbar = binding.toolbarLayout
         val articleTitle = binding.articleTitle
-        loadContent(article.body!!)
+        binding.markdownView.loadMarkdown(article.body!!, cssUrl)
         Glide.with(this).load(article.image).into(binding.background)
         articleTitle.text = article.title
         binding.appBar.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { appBarLayout, verticalOffset ->
@@ -33,14 +45,14 @@ class ReadActivity : BaseActivity<ActivityReadBinding>(), ReadView {
                     //修改状态标记为展开
                     state = CollapsingToolbarLayoutState.EXPANDED
                     //设置title为EXPANDED
-                    collapsinToolbar.title = " "
+                    collapsingToolbar.title = " "
                     articleTitle.text = article.title
                     invalidateOptionsMenu()
                 }
             } else if (Math.abs(verticalOffset) >= appBarLayout.totalScrollRange) {
                 if (state != CollapsingToolbarLayoutState.COLLAPSED) {
                     //设置title不显示
-                    collapsinToolbar.title = article.title
+                    collapsingToolbar.title = article.title
                     //修改状态标记为折叠
                     state = CollapsingToolbarLayoutState.COLLAPSED
                     invalidateOptionsMenu()
@@ -48,7 +60,7 @@ class ReadActivity : BaseActivity<ActivityReadBinding>(), ReadView {
             } else {
                 if (state != CollapsingToolbarLayoutState.INTERNEDIATE) {
                     //设置title为INTERNEDIATE
-                    collapsinToolbar.title = article.title
+                    collapsingToolbar.title = article.title
                     articleTitle.text = " "
                     //修改状态标记为中间
                     state = CollapsingToolbarLayoutState.INTERNEDIATE
@@ -56,16 +68,12 @@ class ReadActivity : BaseActivity<ActivityReadBinding>(), ReadView {
                 }
             }
         })
-        val shareIntent = Intent().setAction(Intent.ACTION_SEND).setType("text/plain")
-        val shareText: String = article.title + "\n" + article.share_url
-        shareIntent.putExtra(Intent.EXTRA_TEXT, shareText)
         binding.toolbar.setOnMenuItemClickListener { item ->
             when (item.itemId) {
                 R.id.action_share -> share(article)
             }
             return@setOnMenuItemClickListener true
         }
-
     }
 
     override fun initPresenter() {
@@ -80,29 +88,15 @@ class ReadActivity : BaseActivity<ActivityReadBinding>(), ReadView {
     override fun initViews() {
         initStatusBar()
         initToolbar()
-
     }
 
     override fun getLayoutId(): Int {
         return R.layout.activity_read
     }
 
-    override fun onBackPressed() {
-        super.onBackPressed()
-        finish()
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.menu_read, menu)
-        return super.onCreateOptionsMenu(menu)
-
-    }
-
-    override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
-        menu!!.findItem(R.id.action_share).isVisible = state == CollapsingToolbarLayoutState.COLLAPSED
-        return super.onPrepareOptionsMenu(menu)
-    }
-
+    /**
+     * 设置状态栏透明
+     */
     private fun initStatusBar() {
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION)
@@ -123,10 +117,6 @@ class ReadActivity : BaseActivity<ActivityReadBinding>(), ReadView {
         toolbar.setOnClickListener {
             binding.scrollView.smoothScrollTo(0, 0)
         }
-    }
-
-    private fun loadContent(content: String) {
-        binding.articleContent.loadMarkdown(content, "file:///android_asset/style.css")
     }
 
     private fun share(article: Article) {

@@ -9,5 +9,5 @@ import com.xiang.study.dailyread.model.bean.Article
  */
 
 interface ReadView : BaseView {
-    fun loadArtile(article: Article)
+    fun loadArticle(article: Article)
 }
