@@ -1,9 +1,7 @@
 package com.xiang.study.dailyread.presenter
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.widget.Toast
-
 import com.xiang.study.dailyread.view.BaseView
 
 /**
@@ -15,7 +13,7 @@ abstract class BasePresenter<T : BaseView> {
 
     protected lateinit var view: T
 
-    public fun attachView(view: T) {
+    fun attachView(view: T) {
         this.view = view;
     }
 
